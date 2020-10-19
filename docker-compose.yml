@@ -1,0 +1,22 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: "3.4"
+
+services:
+  schmoli-webapi:
+    image: schmoli-webapi
+    build:
+      context: .
+      dockerfile: src/Schmoli.ServiceTemplate/Dockerfile
+    ports:
+      - 80
+    depends_on:
+      - schmoli-postgres
+
+  schmoli-postgres:
+    container_name: schmoli-postgres
+    image: postgres:13-alpine
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_PASSWORD=asupersecretpassword
