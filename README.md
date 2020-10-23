@@ -16,7 +16,7 @@ There are some features that are not implimented yet:
 
 - [ ] Identity & Access Management
 - [ ] dotnet-new templates
-- [ ] devcontainer support
+- [x] devcontainer support
 
 ## Patterns
 
