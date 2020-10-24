@@ -19,7 +19,16 @@
   },
 
   // Add the IDs of extensions you want installed when the container is created.
-  "extensions": ["ms-dotnettools.csharp"],
+  "extensions": [
+    "ms-dotnettools.csharp",
+    "benjpas.close-all",
+    "eamodio.gitlens",
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "jmrog.vscode-nuget-package-manager",
+    "k--kato.docomment",
+    "DavidAnson.vscode-markdownlint"
+  ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [5000, 5001],
