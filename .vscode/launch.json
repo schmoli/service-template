@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/Schmoli.ServiceTemplate/bin/Debug/netcoreapp3.1/Schmoli.ServiceTemplate.dll",
+      "program": "${workspaceFolder}/src/Schmoli.ServiceTemplate/bin/Debug/net5.0/Schmoli.ServiceTemplate.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/Schmoli.ServiceTemplate",
       "stopAtEntry": false,
