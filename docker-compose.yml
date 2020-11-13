@@ -17,6 +17,6 @@ services:
     container_name: schmoli-postgres
     image: postgres:13-alpine
     ports:
-      - 5433:5432
+      - 5434:5432
     environment:
       - POSTGRES_PASSWORD=asupersecretpassword
