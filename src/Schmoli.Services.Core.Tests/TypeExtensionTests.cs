@@ -1,9 +1,9 @@
 using System;
-using Xunit;
-using Schmoli.Services.Core.Extensions;
-using FluentAssertions;
 using System.Collections.Generic;
+using FluentAssertions;
 using Schmoli.Services.Core.Data.Postgres;
+using Schmoli.Services.Core.Extensions;
+using Xunit;
 
 namespace Schmoli.Services.Core.Tests
 {

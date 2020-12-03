@@ -27,8 +27,6 @@ namespace Schmoli.ServiceTemplate.Data.Configurations
                    .WithMany(y => y.PrimaryItems)
                    .HasForeignKey(x => x.SecondaryItemId);
             builder.ToTable("PrimaryItems");
-
-
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
+using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
 using Schmoli.ServiceTemplate.Requests;
-using Schmoli.Services.Core.Results;
 
 namespace Schmoli.ServiceTemplate.Services
 {

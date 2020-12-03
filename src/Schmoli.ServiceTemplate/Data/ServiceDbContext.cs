@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Schmoli.Services.Core.Data.Postgres;
 using Schmoli.ServiceTemplate.Data.Configurations;
 using Schmoli.ServiceTemplate.Models;
-using Schmoli.Services.Core.Data.Postgres;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Schmoli.ServiceTemplate.Data
 {

@@ -1,7 +1,7 @@
 using AutoMapper;
+using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
 using Schmoli.ServiceTemplate.Resources;
-using Schmoli.Services.Core.Results;
 
 namespace Schmoli.ServiceTemplate.Mapping
 {

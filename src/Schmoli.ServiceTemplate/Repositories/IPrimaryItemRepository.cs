@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Schmoli.ServiceTemplate.Models;
-using Schmoli.ServiceTemplate.Requests;
 using Schmoli.Services.Core.Repositories;
 using Schmoli.Services.Core.Requests;
 using Schmoli.Services.Core.Results;
+using Schmoli.ServiceTemplate.Models;
+using Schmoli.ServiceTemplate.Requests;
 
 namespace Schmoli.ServiceTemplate.Repositories
 {

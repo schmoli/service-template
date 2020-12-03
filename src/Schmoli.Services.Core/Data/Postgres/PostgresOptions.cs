@@ -4,12 +4,12 @@ namespace Schmoli.Services.Core.Data.Postgres
     {
         public const string Postgres = "Postgres";
         private const string ConnectionStringFormat = "Server={server};Port={port};Database={database};User Id={user};Password={password};{options}";
-        public string Server { get; set; }
-        public int Port { get; set; }
-        public string User { get; set; }
-        public string Password { get; set; }
-        public string Database { get; set; }
-        public string Options { get; set; }
+        public string Server { get; init; }
+        public int Port { get; init; }
+        public string User { get; init; }
+        public string Password { get; init; }
+        public string Database { get; init; }
+        public string Options { get; init; }
 
         /// <summary>
         /// Build a formatted Connection String

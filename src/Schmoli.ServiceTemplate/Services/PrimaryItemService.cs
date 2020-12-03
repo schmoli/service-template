@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Schmoli.ServiceTemplate.Models;
-using Schmoli.ServiceTemplate.Requests;
 using Schmoli.Services.Core.Exceptions;
 using Schmoli.Services.Core.Requests;
 using Schmoli.Services.Core.Results;
+using Schmoli.ServiceTemplate.Models;
+using Schmoli.ServiceTemplate.Requests;
 
 namespace Schmoli.ServiceTemplate.Services
 {

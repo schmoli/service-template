@@ -3,12 +3,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Schmoli.Services.Core.Exceptions;
+using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
 using Schmoli.ServiceTemplate.Requests;
 using Schmoli.ServiceTemplate.Resources;
 using Schmoli.ServiceTemplate.Services;
-using Schmoli.Services.Core.Exceptions;
-using Schmoli.Services.Core.Results;
 
 namespace Schmoli.ServiceTemplate.Controllers
 {

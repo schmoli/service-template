@@ -1,9 +1,9 @@
-using Xunit;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using FluentAssertions;
 using Schmoli.Services.Core.Requests;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Linq;
+using Xunit;
 
 namespace Schmoli.Services.Core.Tests
 {

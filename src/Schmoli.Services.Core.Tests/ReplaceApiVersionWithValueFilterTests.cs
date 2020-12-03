@@ -1,7 +1,7 @@
-using Xunit;
 using FluentAssertions;
-using Schmoli.Services.Core.Swagger;
 using Microsoft.OpenApi.Models;
+using Schmoli.Services.Core.Swagger;
+using Xunit;
 
 namespace Schmoli.Services.Core.Tests
 {

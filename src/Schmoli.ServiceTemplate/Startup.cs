@@ -11,12 +11,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Schmoli.ServiceTemplate.Data;
-using Schmoli.ServiceTemplate.Repositories;
-using Schmoli.ServiceTemplate.Services;
 using Schmoli.Services.Core.Data.Postgres;
 using Schmoli.Services.Core.Health;
 using Schmoli.Services.Core.Swagger;
+using Schmoli.ServiceTemplate.Data;
+using Schmoli.ServiceTemplate.Repositories;
+using Schmoli.ServiceTemplate.Services;
 using Serilog;
 
 namespace Schmoli.ServiceTemplate

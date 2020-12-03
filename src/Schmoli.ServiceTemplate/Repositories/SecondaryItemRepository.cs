@@ -1,6 +1,6 @@
+using Schmoli.Services.Core.Repositories;
 using Schmoli.ServiceTemplate.Data;
 using Schmoli.ServiceTemplate.Models;
-using Schmoli.Services.Core.Repositories;
 
 namespace Schmoli.ServiceTemplate.Repositories
 {

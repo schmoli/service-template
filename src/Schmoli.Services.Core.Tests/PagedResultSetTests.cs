@@ -1,9 +1,9 @@
-using Xunit;
-using FluentAssertions;
 using System.Collections.Generic;
-using Schmoli.Services.Core.Results;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Schmoli.Services.Core.Results;
+using Xunit;
 
 #pragma warning disable 1998
 namespace Schmoli.Services.Core.Tests

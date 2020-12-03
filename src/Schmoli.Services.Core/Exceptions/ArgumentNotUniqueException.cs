@@ -7,11 +7,11 @@ namespace Schmoli.Services.Core.Exceptions
     /// </summary>
     public class ArgumentNotUniqueException : Exception
     {
-        public string ArgumentName { get; private set; }
-
         public ArgumentNotUniqueException(string argumentName)
         {
             ArgumentName = argumentName;
         }
+
+        public string ArgumentName { get; }
     }
 }
