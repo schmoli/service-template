@@ -1,13 +1,17 @@
+using System.Runtime;
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Schmoli.Services.Core.Exceptions;
 using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
 using Schmoli.ServiceTemplate.Requests;
 using Schmoli.ServiceTemplate.Resources;
 using Schmoli.ServiceTemplate.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Schmoli.ServiceTemplate.Controllers
 {
@@ -21,11 +25,22 @@ namespace Schmoli.ServiceTemplate.Controllers
     {
         private readonly IPrimaryItemService _service;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<PrimaryItemsController> _logger;
 
-        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper)
+        private readonly MemoryCacheEntryOptions _cacheOptions = new()
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(2),
+            Priority = CacheItemPriority.Normal,
+            SlidingExpiration = TimeSpan.FromSeconds(30)
+        };
+
+        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper, IMemoryCache memoryCache, ILogger<PrimaryItemsController> logger)
         {
             _service = entityService;
             _mapper = mapper;
+            _memoryCache = memoryCache;
+            _logger = logger;
         }
 
         /// <summary>
@@ -73,14 +88,27 @@ namespace Schmoli.ServiceTemplate.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PrimaryItemResource>> Get(long id)
         {
-            var item = await _service.GetById(id);
+            var cacheKey = $"{nameof(PrimaryItemResource)}_{id}";
 
-            if (item == null)
+            if (!_memoryCache.TryGetValue(cacheKey, out PrimaryItemResource resource))
             {
-                return NotFound();
-            }
+                _logger.LogDebug($"Cache not found for item '{cacheKey}'");
 
-            var resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(item);
+                var item = await _service.GetById(id);
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(item);
+
+                _memoryCache.Set(cacheKey, resource, _cacheOptions);
+            }
+            else
+            {
+                _logger.LogDebug($"Cache found for item '{cacheKey}'");
+            }
             return Ok(resource);
         }
 

@@ -51,6 +51,9 @@ namespace Schmoli.ServiceTemplate
 
             services.AddDbContext<ServiceDbContext>();
 
+            // TODO: Replace with REDIS
+            services.AddMemoryCache();
+
             // Configure Health Checks
             // Get the connection string here for health checks
             var connectionString = Configuration
