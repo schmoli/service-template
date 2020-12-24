@@ -1,16 +1,21 @@
 using System;
+using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Schmoli.Services.Core.Cache;
@@ -68,9 +73,9 @@ namespace Schmoli.ServiceTemplate
             // Configure Health Checks
             services
                 .AddHealthChecks()
-                .AddCheck<LiveCheck>("live", tags: new string[] { "service" })
+                .AddCheck<LiveCheck>("Live", tags: new string[] { "service" })
                 .AddDbContextCheck<ServiceDbContext>(
-                    "ServiceDbContext",
+                    "Database",
                     tags: new string[] { "dependencies", "database" })
                 // If not using EF Core you can do something like this to check postgres
                 // .AddNpgSql(
@@ -79,7 +84,7 @@ namespace Schmoli.ServiceTemplate
                 //     tags: new string[] { "dependencies", "database" })
                 .AddRedis(
                     Configuration["ConnectionStrings:Redis"],
-                    name: "redis",
+                    name: "Cache",
                     tags: new string[] { "dependencies", "cache" });
 
             services

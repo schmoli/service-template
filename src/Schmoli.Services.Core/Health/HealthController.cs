@@ -1,11 +1,31 @@
 using System;
+using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Schmoli.Services.Core.Health
 {
+    /*
+    Can be done direclty in configure:
+                app.UseHealthChecks("/health",
+                    new HealthCheckOptions
+                    {
+                        ResponseWriter = async (context, report) =>
+                        {
+                            var result = JsonSerializer.Serialize(
+                                new {
+                                    status = report.Status.ToString(),
+                                    errors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
+                                }
+                            );
+                            context.Response.ContentType = MediaTypeNames.Application.Json;
+                            await context.Response.WriteAsync(result);
+                        }
+                    });
+    */
     [Route("/health")]
     public class HealthController : ControllerBase
     {
@@ -26,7 +46,14 @@ namespace Schmoli.Services.Core.Health
         {
             HealthReport report = await _healthCheckService.CheckHealthAsync();
 
-            return report.Status == HealthStatus.Healthy ? Ok(report) : StatusCode((int)HttpStatusCode.ServiceUnavailable, report);
+            var result = JsonSerializer.Serialize(
+                            new
+                            {
+                                status = report.Status.ToString(),
+                                errors = report.Entries.Select(e => new { key = e.Key, value = Enum.GetName(typeof(HealthStatus), e.Value.Status) })
+                            }, options: new JsonSerializerOptions { WriteIndented = true });
+
+            return report.Status == HealthStatus.Healthy ? Ok(result) : StatusCode((int)HttpStatusCode.ServiceUnavailable, result);
         }
 
         /// <summary>
