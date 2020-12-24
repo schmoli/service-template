@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Schmoli.Services.Core.Cache;
 using Schmoli.Services.Core.Exceptions;
 using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
@@ -21,11 +23,15 @@ namespace Schmoli.ServiceTemplate.Controllers
     {
         private readonly IPrimaryItemService _service;
         private readonly IMapper _mapper;
+        private readonly ILogger<PrimaryItemsController> _logger;
+        private readonly IServiceCache _cache;
 
-        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper)
+        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper, ILogger<PrimaryItemsController> logger, IServiceCache cache)
         {
             _service = entityService;
             _mapper = mapper;
+            _logger = logger;
+            _cache = cache;
         }
 
         /// <summary>
@@ -73,14 +79,24 @@ namespace Schmoli.ServiceTemplate.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PrimaryItemResource>> Get(long id)
         {
-            var item = await _service.GetById(id);
+            var cacheKey = $"{nameof(PrimaryItemResource)}_{id}";
 
-            if (item == null)
+            var resource = await _cache.GetAsync<PrimaryItemResource>(cacheKey);
+            if (resource == null)
             {
-                return NotFound();
+                var item = await _service.GetById(id);
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(item);
+
+                await _cache.AddAsync(cacheKey, resource);
             }
 
-            var resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(item);
+
             return Ok(resource);
         }
 
@@ -98,6 +114,7 @@ namespace Schmoli.ServiceTemplate.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PrimaryItemResource>> Update(long id, [FromBody] PrimaryItemSaveResource resourceToSave)
         {
+            var cacheKey = $"{nameof(PrimaryItemResource)}_{id}";
             var modelToUpdate = await _service.GetById(id);
 
             if (modelToUpdate == null)
@@ -111,6 +128,7 @@ namespace Schmoli.ServiceTemplate.Controllers
             {
                 await _service.Update(modelToUpdate, model);
                 var resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(modelToUpdate);
+                await _cache.AddAsync(cacheKey, resource);
 
                 return Ok(resource);
             }

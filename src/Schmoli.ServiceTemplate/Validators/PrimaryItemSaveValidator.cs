@@ -1,13 +1,16 @@
 using FluentValidation;
 using Schmoli.ServiceTemplate.Resources;
 
-public class PrimaryItemSaveValidator : AbstractValidator<PrimaryItemSaveResource>
+namespace Schmoli.ServiceTemplate.Validators
 {
-    public PrimaryItemSaveValidator()
+    public class PrimaryItemSaveValidator : AbstractValidator<PrimaryItemSaveResource>
     {
-        RuleFor(x => x.Name).NotNull()
-                            .MinimumLength(3)
-                            .MaximumLength(32);
-    }
+        public PrimaryItemSaveValidator()
+        {
+            RuleFor(x => x.Name).NotNull()
+                                .MinimumLength(3)
+                                .MaximumLength(32);
+        }
 
+    }
 }

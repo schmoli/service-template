@@ -10,6 +10,6 @@ namespace Schmoli.Services.Core.Requests
         [Range(1, int.MaxValue)]
         public int PageSize { get; set; } = 100;
 
-        public static PagedRequest Default => new PagedRequest();
+        public static PagedRequest Default => new();
     }
 }
