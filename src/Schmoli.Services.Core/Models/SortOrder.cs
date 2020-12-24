@@ -1,5 +1,8 @@
-public enum SortOrder
+namespace Schmoli.Services.Core.Models
 {
-    Ascending,
-    Descending
+    public enum SortOrder
+    {
+        Ascending,
+        Descending
+    }
 }

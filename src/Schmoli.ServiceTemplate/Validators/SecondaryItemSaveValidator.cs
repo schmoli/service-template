@@ -1,12 +1,15 @@
 using FluentValidation;
 using Schmoli.ServiceTemplate.Resources;
 
-public class SecondaryItemSaveValidator : AbstractValidator<SecondaryItemSaveResource>
+namespace Schmoli.ServiceTemplate.Validators
 {
-    public SecondaryItemSaveValidator()
+    public class SecondaryItemSaveValidator : AbstractValidator<SecondaryItemSaveResource>
     {
-        RuleFor(x => x.Name).NotNull()
-                            .MinimumLength(3)
-                            .MaximumLength(32);
+        public SecondaryItemSaveValidator()
+        {
+            RuleFor(x => x.Name).NotNull()
+                                .MinimumLength(3)
+                                .MaximumLength(32);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using AutoMapper;
@@ -7,10 +8,12 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Schmoli.Services.Core.Cache;
 using Schmoli.Services.Core.Data.Postgres;
 using Schmoli.Services.Core.Health;
 using Schmoli.Services.Core.Swagger;
@@ -51,37 +54,33 @@ namespace Schmoli.ServiceTemplate
 
             services.AddDbContext<ServiceDbContext>();
 
-            // TODO: Replace with REDIS
-            services.AddMemoryCache();
+            // Configure Redis Cache and Entry Options
+            services.AddStackExchangeRedisCache(o =>
+            {
+                o.Configuration = Configuration["ConnectionStrings:Redis"];
+            }).AddSingleton(new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1),
+                SlidingExpiration = TimeSpan.FromMinutes(2)
+            }).AddSingleton<IServiceCache, DistributedServiceCache>();
+
 
             // Configure Health Checks
-            // Get the connection string here for health checks
-            var connectionString = Configuration
-                .GetSection(PostgresOptions.Postgres)
-                .Get<PostgresOptions>()
-                .ConnectionString;
-
-            // Configure custom health check
             services
                 .AddHealthChecks()
                 .AddCheck<LiveCheck>("live", tags: new string[] { "service" })
-                // TODO: pick one or the other, both throw during report generation
                 .AddDbContextCheck<ServiceDbContext>(
                     "ServiceDbContext",
                     tags: new string[] { "dependencies", "database" })
-                .AddNpgSql(
-                    npgsqlConnectionString: connectionString,
-                    name: "postgres",
-                    tags: new string[] { "dependencies", "database" });
-
-            // Example of additional checks you could do
-            // .AddCheck("messaging",
-            //     () => HealthCheckResult.Healthy("reason"),
-            //     tags: new string[] { "dependencies", "messaging" })
-            // .AddCheck("cache",
-            //     () => HealthCheckResult.Healthy("reason"),
-            //     tags: new string[] { "dependencies", "cache" })
-            //     ;
+                // If not using EF Core you can do something like this to check postgres
+                // .AddNpgSql(
+                //     npgsqlConnectionString: connectionString,
+                //     name: "postgres",
+                //     tags: new string[] { "dependencies", "database" })
+                .AddRedis(
+                    Configuration["ConnectionStrings:Redis"],
+                    name: "redis",
+                    tags: new string[] { "dependencies", "cache" });
 
             services
                 .SwaggerConfiguration(Configuration, $"v{ApiVersionMajor}", serviceVersion)

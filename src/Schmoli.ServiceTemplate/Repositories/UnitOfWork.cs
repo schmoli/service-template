@@ -1,3 +1,5 @@
+using System;
+using System.Runtime;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Schmoli.ServiceTemplate.Data;
@@ -26,7 +28,16 @@ namespace Schmoli.ServiceTemplate.Repositories
 
         public void Dispose()
         {
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _context?.Dispose();
+            }
         }
     }
 }

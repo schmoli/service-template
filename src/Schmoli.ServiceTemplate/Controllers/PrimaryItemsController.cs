@@ -1,17 +1,15 @@
-using System.Runtime;
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Schmoli.Services.Core.Cache;
 using Schmoli.Services.Core.Exceptions;
 using Schmoli.Services.Core.Results;
 using Schmoli.ServiceTemplate.Models;
 using Schmoli.ServiceTemplate.Requests;
 using Schmoli.ServiceTemplate.Resources;
 using Schmoli.ServiceTemplate.Services;
-using Microsoft.Extensions.Logging;
 
 namespace Schmoli.ServiceTemplate.Controllers
 {
@@ -25,22 +23,15 @@ namespace Schmoli.ServiceTemplate.Controllers
     {
         private readonly IPrimaryItemService _service;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _memoryCache;
         private readonly ILogger<PrimaryItemsController> _logger;
+        private readonly IServiceCache _cache;
 
-        private readonly MemoryCacheEntryOptions _cacheOptions = new()
-        {
-            AbsoluteExpiration = DateTime.Now.AddMinutes(2),
-            Priority = CacheItemPriority.Normal,
-            SlidingExpiration = TimeSpan.FromSeconds(30)
-        };
-
-        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper, IMemoryCache memoryCache, ILogger<PrimaryItemsController> logger)
+        public PrimaryItemsController(IPrimaryItemService entityService, IMapper mapper, ILogger<PrimaryItemsController> logger, IServiceCache cache)
         {
             _service = entityService;
             _mapper = mapper;
-            _memoryCache = memoryCache;
             _logger = logger;
+            _cache = cache;
         }
 
         /// <summary>
@@ -90,10 +81,9 @@ namespace Schmoli.ServiceTemplate.Controllers
         {
             var cacheKey = $"{nameof(PrimaryItemResource)}_{id}";
 
-            if (!_memoryCache.TryGetValue(cacheKey, out PrimaryItemResource resource))
+            var resource = await _cache.GetAsync<PrimaryItemResource>(cacheKey);
+            if (resource == null)
             {
-                _logger.LogDebug($"Cache not found for item '{cacheKey}'");
-
                 var item = await _service.GetById(id);
 
                 if (item == null)
@@ -103,12 +93,10 @@ namespace Schmoli.ServiceTemplate.Controllers
 
                 resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(item);
 
-                _memoryCache.Set(cacheKey, resource, _cacheOptions);
+                await _cache.AddAsync(cacheKey, resource);
             }
-            else
-            {
-                _logger.LogDebug($"Cache found for item '{cacheKey}'");
-            }
+
+
             return Ok(resource);
         }
 
@@ -126,6 +114,7 @@ namespace Schmoli.ServiceTemplate.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PrimaryItemResource>> Update(long id, [FromBody] PrimaryItemSaveResource resourceToSave)
         {
+            var cacheKey = $"{nameof(PrimaryItemResource)}_{id}";
             var modelToUpdate = await _service.GetById(id);
 
             if (modelToUpdate == null)
@@ -139,6 +128,7 @@ namespace Schmoli.ServiceTemplate.Controllers
             {
                 await _service.Update(modelToUpdate, model);
                 var resource = _mapper.Map<PrimaryItem, PrimaryItemResource>(modelToUpdate);
+                await _cache.AddAsync(cacheKey, resource);
 
                 return Ok(resource);
             }
